@@ -1,4 +1,2 @@
-.env
-node_modules
-dist
-coverage
+# dependencies
+/node_modules
