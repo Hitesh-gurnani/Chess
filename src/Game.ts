@@ -14,13 +14,14 @@ export class Game {
     this.board = new Chess();
     this.moves = [];
     this.startTime = Date.now();
-    this.player1.emit(
+    console.log("Game started");
+    this.player1.send(
       JSON.stringify({
         type: INIT_GAME,
         payload: "white",
       })
     );
-    this.player2.emit(
+    this.player2.send(
       JSON.stringify({
         type: INIT_GAME,
         payload: "black",
