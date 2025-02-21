@@ -36,10 +36,12 @@ export class GameManager {
       }
       if (message.type === MOVE) {
         // add the move to the game
+        console.log("MOVE", message);
         const game = this.games.find(
           (game) => game.player1 === socket || game.player2 === socket
         );
         if (game) {
+          console.log("MOVE2");
           game.makeMove(socket, message.move);
         }
       }

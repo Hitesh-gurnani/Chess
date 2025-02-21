@@ -10,6 +10,7 @@ class Game {
         this.board = new chess_js_1.Chess();
         this.moves = [];
         this.startTime = Date.now();
+        this.moveCount = 0;
         console.log("Game started");
         this.player1.send(JSON.stringify({
             type: messages_1.INIT_GAME,
@@ -22,20 +23,22 @@ class Game {
     }
     makeMove(socket, move) {
         // validation here
-        if (this.board.moves.length % 2 == 0 && socket === this.player1) {
+        console.log("MOVE3");
+        if (this.moveCount % 2 == 0 && socket !== this.player1) {
             return;
         }
-        if (this.board.moves.length % 2 == 1 && socket === this.player2) {
+        if (this.moveCount % 2 == 1 && socket !== this.player2) {
             return;
         }
         try {
             this.board.move(move);
+            console.log("MOVE4");
         }
         catch (error) {
             return;
         }
         if (this.board.isGameOver()) {
-            this.player1.emit(JSON.stringify({
+            this.player1.send(JSON.stringify({
                 type: messages_1.GAME_OVER,
                 payload: {
                     winner: this.board.turn() === "w" ? "black" : "white",
@@ -43,18 +46,21 @@ class Game {
             }));
             return;
         }
-        if (this.moves.length % 2 == 0) {
-            this.player2.emit(JSON.stringify({
+        if (this.moveCount % 2 == 0) {
+            console.log("MOVE5");
+            this.player2.send(JSON.stringify({
                 type: messages_1.MOVE,
                 payload: move,
             }));
         }
         else {
-            this.player1.emit(JSON.stringify({
+            console.log("MOVE6");
+            this.player1.send(JSON.stringify({
                 type: messages_1.MOVE,
                 payload: move,
             }));
         }
+        this.moveCount++;
     }
 }
 exports.Game = Game;
