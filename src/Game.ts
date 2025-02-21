@@ -1,5 +1,6 @@
 import { Chess } from "chess.js";
 import { WebSocket } from "ws";
+import { GAME_OVER, MOVE } from "./messages";
 
 export class Game {
   public player1: WebSocket;
@@ -37,9 +38,32 @@ export class Game {
       return;
     }
 
-    // is this users move
-    // update the board
-    // check for win
-    // send the board to the users
+    if (this.board.isGameOver()) {
+      this.player1.emit(
+        JSON.stringify({
+          type: GAME_OVER,
+          payload: {
+            winner: this.board.turn() === "w" ? "black" : "white",
+          },
+        })
+      );
+      return;
+    }
+
+    if (this.moves.length % 2 == 0) {
+      this.player2.emit(
+        JSON.stringify({
+          type: MOVE,
+          payload: move,
+        })
+      );
+    } else {
+      this.player1.emit(
+        JSON.stringify({
+          type: MOVE,
+          payload: move,
+        })
+      );
+    }
   }
 }
